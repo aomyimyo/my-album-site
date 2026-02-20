@@ -67,4 +67,6 @@ module.exports = (req, res) => {
   // found matching code → send download URL
   const downloadUrl = urls[albumId] || "";
   sendJson(res, 200, { ok: true, downloadUrl });
+
+  console.log("ENV ALBUM_CODES:", process.env.ALBUM_CODES);
 };
