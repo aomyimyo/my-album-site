@@ -1,9 +1,4 @@
-function sendJson(res, status, data) {
-  res.setHeader("Content-Type", "application/json");
-  res.status(status).end(JSON.stringify(data));
-}
-
-module.exports = (req, res) => {
+export default function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -14,24 +9,20 @@ module.exports = (req, res) => {
   }
 
   if (req.method !== "POST") {
-    sendJson(res, 405, { ok: false, error: "Method not allowed" });
-    return;
+    return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
-  // parse body
   let body = req.body;
   if (typeof body === "string") {
     try {
       body = JSON.parse(body);
     } catch {
-      sendJson(res, 400, { ok: false, error: "Invalid body" });
-      return;
+      return res.status(400).json({ ok: false, error: "Invalid body" });
     }
   }
 
-  const { albumId, code } = body;
+  const { albumId, code } = body || {};
 
-  // parse env JSON
   let codes = {};
   let urls = {};
   try {
@@ -42,31 +33,27 @@ module.exports = (req, res) => {
       urls = JSON.parse(process.env.ALBUM_DOWNLOAD_URLS);
     }
   } catch {
-    sendJson(res, 500, {
+    return res.status(500).json({
       ok: false,
-      error: "Server config error: Invalid JSON in Environment Variables",
+      error: "Invalid JSON in Environment Variables",
     });
-    return;
   }
 
   const expected = codes[albumId];
 
   if (!albumId || !code || expected === undefined) {
-    sendJson(res, 200, { ok: false });
-    return;
+    return res.status(200).json({ ok: false });
   }
 
   const normalized = String(code).trim().toUpperCase();
   const match = String(expected).trim().toUpperCase();
 
   if (normalized !== match) {
-    sendJson(res, 200, { ok: false });
-    return;
+    return res.status(200).json({ ok: false });
   }
 
-  // found matching code → send download URL
-  const downloadUrl = urls[albumId] || "";
-  sendJson(res, 200, { ok: true, downloadUrl });
-
-  console.log("ENV ALBUM_CODES:", process.env.ALBUM_CODES);
-};
+  return res.status(200).json({
+    ok: true,
+    downloadUrl: urls[albumId] || "",
+  });
+}
