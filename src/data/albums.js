@@ -10,7 +10,7 @@ export const ALBUMS = [
   {
     id: "album-1",
     title: "อัลบั้มที่ 1",
-    coverImage: "/img/IMG_1390.jpg",
+    coverImage: "/img/IMG_1537.jpg",
     images: [
       "/img/IMG_1390.jpg",
       "/img/IMG_1370.jpg",
