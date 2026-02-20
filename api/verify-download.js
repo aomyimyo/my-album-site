@@ -1,41 +1,70 @@
-// Vercel Serverless Function: ตรวจรหัสดาวน์โหลดฝั่งเซิร์ฟเวอร์
-// รหัสและลิงก์ไม่ไปอยู่ในไฟล์ที่ส่งให้เบราว์เซอร์
-// ตั้งค่าใน Vercel: Project → Settings → Environment Variables
+function sendJson(res, status, data) {
+  res.setHeader("Content-Type", "application/json");
+  res.status(status).end(JSON.stringify(data));
+}
 
 module.exports = (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end()
+  if (req.method === "OPTIONS") {
+    res.status(200).end();
+    return;
   }
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ ok: false, error: 'Method not allowed' })
+  if (req.method !== "POST") {
+    sendJson(res, 405, { ok: false, error: "Method not allowed" });
+    return;
   }
 
-  let codes = {}
-  let urls = {}
+  // parse body
+  let body = req.body;
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      sendJson(res, 400, { ok: false, error: "Invalid body" });
+      return;
+    }
+  }
+
+  const { albumId, code } = body;
+
+  // parse env JSON
+  let codes = {};
+  let urls = {};
   try {
-    if (process.env.ALBUM_CODES) codes = JSON.parse(process.env.ALBUM_CODES)
-    if (process.env.ALBUM_DOWNLOAD_URLS) urls = JSON.parse(process.env.ALBUM_DOWNLOAD_URLS)
-  } catch (e) {
-    return res.status(500).json({ ok: false, error: 'Server config error' })
+    if (process.env.ALBUM_CODES) {
+      codes = JSON.parse(process.env.ALBUM_CODES);
+    }
+    if (process.env.ALBUM_DOWNLOAD_URLS) {
+      urls = JSON.parse(process.env.ALBUM_DOWNLOAD_URLS);
+    }
+  } catch {
+    sendJson(res, 500, {
+      ok: false,
+      error: "Server config error: Invalid JSON in Environment Variables",
+    });
+    return;
   }
 
-  const { albumId, code } = req.body || {}
-  const expected = codes[albumId]
-  if (!albumId || !code || !expected) {
-    return res.status(200).json({ ok: false })
+  const expected = codes[albumId];
+
+  if (!albumId || !code || expected === undefined) {
+    sendJson(res, 200, { ok: false });
+    return;
   }
 
-  const normalized = String(code).trim().toUpperCase()
-  const match = String(expected).trim().toUpperCase()
+  const normalized = String(code).trim().toUpperCase();
+  const match = String(expected).trim().toUpperCase();
+
   if (normalized !== match) {
-    return res.status(200).json({ ok: false })
+    sendJson(res, 200, { ok: false });
+    return;
   }
 
-  const downloadUrl = urls[albumId] || ''
-  return res.status(200).json({ ok: true, downloadUrl })
-}
+  // found matching code → send download URL
+  const downloadUrl = urls[albumId] || "";
+  sendJson(res, 200, { ok: true, downloadUrl });
+};
