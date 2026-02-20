@@ -9,7 +9,7 @@ const driveImg = (id, size = "w1920") =>
 export const ALBUMS = [
   {
     id: "album-1",
-    title: "อัลบั้มที่ 1",
+    title: "ตูตูดอกทานตะวัน",
     coverImage: "/img/IMG_1537.jpg",
     images: [
       "/img/IMG_1390.jpg",
@@ -31,13 +31,25 @@ export const ALBUMS = [
   },
   {
     id: "album-2",
-    title: "อัลบั้มที่ 2",
-    coverImage:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
+    title: "แป้งรถไฟ",
+    coverImage: "/img/IMG_4314.jpg",
     images: [
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&fit=crop",
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=800&fit=crop",
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=800&fit=crop",
+      "/img/IMG_4314.jpg",
+      "/img/IMG_4353.jpg",
+      "/img/IMG_4365.jpg",
+      "/img/IMG_4375.jpg",
+      "/img/IMG_4691.jpg",
+      "/img/IMG_4582.jpg",
+      "/img/IMG_4600.jpg",
+      "/img/IMG_4674.jpg",
+      "/img/IMG_4683.jpg",
+
+      "/img/IMG_4726.jpg",
+      "/img/IMG_4762.jpg",
+      "/img/IMG_4814.jpg",
+      "/img/IMG_4869.jpg",
+      "/img/IMG_4874.jpg",
+      "/img/IMG_4848.jpg",
     ],
   },
   {
@@ -51,20 +63,10 @@ export const ALBUMS = [
       "https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=800&fit=crop",
     ],
   },
+
   {
     id: "album-4",
     title: "อัลบั้มที่ 4",
-    coverImage:
-      "https://images.unsplash.com/photo-1501854140801-50d01698999b?w=400&h=300&fit=crop",
-    images: [
-      "https://images.unsplash.com/photo-1501854140801-50d01698999b?w=800&fit=crop",
-      "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=800&fit=crop",
-      "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=800&fit=crop",
-    ],
-  },
-  {
-    id: "album-5",
-    title: "อัลบั้มที่ 5",
     coverImage:
       "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=400&h=300&fit=crop",
     images: [
