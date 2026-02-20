@@ -109,10 +109,12 @@ export default function Album() {
         transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
       >
         <Link to="/" className="back-link">← กลับหน้าหลัก</Link>
-        <h1>{album.title}</h1>
-        <button type="button" className="download-btn" onClick={handleDownloadClick}>
-          ดาวน์โหลดรูปทั้งหมด
-        </button>
+        <div className="album-title-row">
+          <h1>{album.title}</h1>
+          <button type="button" className="download-btn" onClick={handleDownloadClick}>
+            ดาวน์โหลดรูปทั้งหมด
+          </button>
+        </div>
       </motion.header>
       <motion.div
         className="gallery gallery--pinterest"

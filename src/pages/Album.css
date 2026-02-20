@@ -103,28 +103,33 @@
 /* Unlocked album */
 .album-header {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
   margin-bottom: 2rem;
 }
 
-.album-header h1 {
-  flex: 1;
+.album-title-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.album-title-row h1 {
   margin: 0;
   font-size: 1.5rem;
+  flex: 1;
   min-width: 0;
 }
 
 @media (max-width: 640px) {
   .album-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
     margin-bottom: 1.5rem;
   }
 
-  .album-header h1 {
+  .album-title-row h1 {
     font-size: 1.25rem;
   }
 }
