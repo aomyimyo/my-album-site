@@ -53,12 +53,11 @@
 
 @media (min-width: 1200px) {
   .album-grid {
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-.album-card {
-  display: block;
+.album-card {display: block;
   background: var(--card);
   border-radius: var(--radius);
   overflow: hidden;
