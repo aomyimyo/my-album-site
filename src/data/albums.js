@@ -1,7 +1,8 @@
 // อัลบั้มทั้ง 5 (แก้ชื่อ รูป ได้ที่นี่)
 // รหัสและลิงก์ดาวน์โหลดตั้งใน Vercel Environment Variables เท่านั้น → ดู README
 //
-// รูปจาก Google Drive: ใช้รูปแบบ thumbnail ตามด้านล่าง (sz = w400, w800, w1920 ฯลฯ)
+// รูปจากโฟลเดอร์ public/img/ ใช้ path /img/ชื่อไฟล์ (ไม่ต้อง import)
+// พอขึ้น production อยากใช้ Google Drive แทน เปลี่ยนเป็น driveImg(id, size) ตามด้านล่าง
 const driveImg = (id, size = "w1920") =>
   `https://drive.google.com/thumbnail?id=${id}&sz=${size}`;
 
@@ -9,11 +10,23 @@ export const ALBUMS = [
   {
     id: "album-1",
     title: "อัลบั้มที่ 1",
-    coverImage: driveImg("1yoq_QNtrYEPISnI3Rorl4E1wqoSfVP0i", "w800"),
+    coverImage: "/img/IMG_1390.jpg",
     images: [
-      driveImg("1yoq_QNtrYEPISnI3Rorl4E1wqoSfVP0i"),
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&fit=crop",
-      "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=800&fit=crop",
+      "/img/IMG_1390.jpg",
+      "/img/IMG_1370.jpg",
+      "/img/IMG_1377.jpg",
+      "/img/IMG_1381.jpg",
+      "/img/IMG_1402.jpg",
+      "/img/IMG_1416.jpg",
+      "/img/IMG_1433.jpg",
+      "/img/IMG_1479.jpg",
+      "/img/IMG_1544.jpg",
+      "/img/IMG_1560.jpg",
+      "/img/IMG_1414.jpg",
+      "/img/IMG_1565.jpg",
+      "/img/IMG_1537.jpg",
+      "/img/IMG_1556.jpg",
+      "/img/IMG_1570.jpg",
     ],
   },
   {

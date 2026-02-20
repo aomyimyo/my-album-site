@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { useParams, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ALBUMS } from '../data/albums'
@@ -25,6 +26,13 @@ export default function Album() {
   const { albumId } = useParams()
   const album = ALBUMS.find((a) => a.id === albumId)
   const [lightboxIndex, setLightboxIndex] = useState(null)
+  useEffect(() => {
+    if (lightboxIndex !== null) {
+      const prev = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+      return () => { document.body.style.overflow = prev }
+    }
+  }, [lightboxIndex])
   const [showDownloadModal, setShowDownloadModal] = useState(false)
   const [downloadPassword, setDownloadPassword] = useState('')
   const [downloadError, setDownloadError] = useState('')
@@ -107,7 +115,7 @@ export default function Album() {
         </button>
       </motion.header>
       <motion.div
-        className="gallery"
+        className="gallery gallery--pinterest"
         variants={galleryContainer}
         initial="hidden"
         animate="animate"
@@ -157,68 +165,73 @@ export default function Album() {
           </div>
         </div>
       )}
-      <AnimatePresence>
-        {lightboxIndex !== null && (
-          <motion.div
-            className="lightbox"
-            onClick={() => setLightboxIndex(null)}
-            role="dialog"
-            aria-label="ดูรูปเต็ม"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
+      {createPortal(
+        <AnimatePresence>
+          {lightboxIndex !== null && (
             <motion.div
-              className="lightbox-content"
-              onClick={(e) => e.stopPropagation()}
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="lightbox"
+              onClick={() => setLightboxIndex(null)}
+              role="dialog"
+              aria-label="ดูรูปเต็ม"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
             >
-              <button
-                type="button"
-                className="lightbox-close"
-                onClick={() => setLightboxIndex(null)}
-                aria-label="ปิด"
+              <motion.div
+                className="lightbox-content"
+                onClick={(e) => {
+                  if (e.target === e.currentTarget) setLightboxIndex(null)
+                }}
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
               >
-                ×
-              </button>
-              <button
-                type="button"
-                className="lightbox-arrow lightbox-prev"
-                onClick={goPrev}
-                aria-label="รูปก่อนหน้า"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-              </button>
-              <button
-                type="button"
-                className="lightbox-arrow lightbox-next"
-                onClick={goNext}
-                aria-label="รูปถัดไป"
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-              </button>
-              <AnimatePresence mode="wait" initial={false}>
-                <motion.img
-                  key={lightboxIndex}
-                  src={album.images[lightboxIndex]}
-                  alt={`รูปที่ ${lightboxIndex + 1}`}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                />
-              </AnimatePresence>
-              <span className="lightbox-counter">
-                {lightboxIndex + 1} / {album.images.length}
-              </span>
+                <button
+                  type="button"
+                  className="lightbox-close"
+                  onClick={() => setLightboxIndex(null)}
+                  aria-label="ปิด"
+                >
+                  ×
+                </button>
+                <button
+                  type="button"
+                  className="lightbox-arrow lightbox-prev"
+                  onClick={goPrev}
+                  aria-label="รูปก่อนหน้า"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+                </button>
+                <button
+                  type="button"
+                  className="lightbox-arrow lightbox-next"
+                  onClick={goNext}
+                  aria-label="รูปถัดไป"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </button>
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.img
+                    key={lightboxIndex}
+                    src={album.images[lightboxIndex]}
+                    alt={`รูปที่ ${lightboxIndex + 1}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                </AnimatePresence>
+                <span className="lightbox-counter">
+                  {lightboxIndex + 1} / {album.images.length}
+                </span>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   )
 }
