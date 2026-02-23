@@ -37,6 +37,7 @@ export default function Album() {
   const [downloadPassword, setDownloadPassword] = useState('')
   const [downloadError, setDownloadError] = useState('')
   const [downloadLoading, setDownloadLoading] = useState(false)
+  const [downloadUrl, setDownloadUrl] = useState(null)
 
   if (!album) {
     return (
@@ -52,6 +53,7 @@ export default function Album() {
     setShowDownloadModal(true)
     setDownloadPassword('')
     setDownloadError('')
+    setDownloadUrl(null)
   }
 
   const handleDownloadSubmit = async (e) => {
@@ -66,9 +68,9 @@ export default function Album() {
       })
       const data = await res.json().catch(() => ({}))
       if (data.ok && data.downloadUrl) {
-        window.open(data.downloadUrl, '_blank', 'noopener,noreferrer')
-        setShowDownloadModal(false)
         setDownloadPassword('')
+        setDownloadError('')
+        setDownloadUrl(data.downloadUrl)
       } else {
         setDownloadError('รหัสไม่ถูกต้อง กรุณาลองใหม่')
       }
@@ -134,38 +136,63 @@ export default function Album() {
           </motion.button>
         ))}
       </motion.div>
-      {showDownloadModal && (
+      {showDownloadModal && createPortal(
         <div
           className="download-modal-overlay"
-          onClick={() => setShowDownloadModal(false)}
+          onClick={() => { setShowDownloadModal(false); setDownloadUrl(null) }}
           role="dialog"
-          aria-label="ใส่รหัสเพื่อดาวน์โหลด"
+          aria-label={downloadUrl ? 'เปิดลิงก์' : 'ใส่รหัสเพื่อดาวน์โหลด'}
         >
           <div className="download-modal" onClick={(e) => e.stopPropagation()}>
-            <h2>ดาวน์โหลดรูปทั้งหมด</h2>
-            <p>กรุณาใส่รหัสเพื่อเปิดลิงก์ดาวน์โหลด</p>
-            <form onSubmit={handleDownloadSubmit}>
-              <input
-                type="text"
-                value={downloadPassword}
-                onChange={(e) => setDownloadPassword(e.target.value)}
-                placeholder="รหัสผ่าน"
-                autoFocus
-                autoComplete="off"
-                className={downloadError ? 'input-error' : ''}
-              />
-              {downloadError && <p className="error-msg">{downloadError}</p>}
-              <div className="download-modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => setShowDownloadModal(false)}>
-                  ยกเลิก
+            {downloadUrl ? (
+              <>
+                <h2>รหัสถูกต้อง</h2>
+                <p>กดด้านล่างเพื่อเปิดลิงก์ในแท็บใหม่</p>
+                <a
+                  href={downloadUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="download-modal-link"
+                >
+                  เปิดลิงก์ในแท็บใหม่
+                </a>
+                <button
+                  type="button"
+                  className="download-modal-close-link"
+                  onClick={() => { setShowDownloadModal(false); setDownloadUrl(null) }}
+                >
+                  ปิด
                 </button>
-                <button type="submit" className="btn-confirm" disabled={downloadLoading}>
-                  {downloadLoading ? 'กำลังตรวจสอบ...' : 'เปิดลิงก์ดาวน์โหลด'}
-                </button>
-              </div>
-            </form>
+              </>
+            ) : (
+              <>
+                <h2>ดาวน์โหลดรูปทั้งหมด</h2>
+                <p>กรุณาใส่รหัสเพื่อเปิดลิงก์ดาวน์โหลด</p>
+                <form onSubmit={handleDownloadSubmit}>
+                  <input
+                    type="text"
+                    value={downloadPassword}
+                    onChange={(e) => setDownloadPassword(e.target.value)}
+                    placeholder="รหัสผ่าน"
+                    autoFocus
+                    autoComplete="off"
+                    className={downloadError ? 'input-error' : ''}
+                  />
+                  {downloadError && <p className="error-msg">{downloadError}</p>}
+                  <div className="download-modal-actions">
+                    <button type="button" className="btn-cancel" onClick={() => setShowDownloadModal(false)}>
+                      ยกเลิก
+                    </button>
+                    <button type="submit" className="btn-confirm" disabled={downloadLoading}>
+                      {downloadLoading ? 'กำลังตรวจสอบ...' : 'เปิดลิงก์ดาวน์โหลด'}
+                    </button>
+                  </div>
+                </form>
+              </>
+            )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
       {createPortal(
         <AnimatePresence>

@@ -164,10 +164,17 @@
   }
 }
 
-/* Download password modal */
+/* Download password modal (render ผ่าน Portal ที่ body จึง center ตาม viewport) */
 .download-modal-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
   background: rgba(0, 0, 0, 0.75);
   display: flex;
   align-items: center;
@@ -175,6 +182,7 @@
   z-index: 100;
   padding: 1.5rem;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .download-modal {
@@ -224,6 +232,38 @@
   color: var(--error);
   margin: 0;
   font-size: 0.9rem;
+}
+
+.download-modal-link {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  color: #0f0f12;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+
+.download-modal-link:hover {
+  background: var(--accent-hover);
+}
+
+.download-modal-close-link {
+  display: block;
+  margin-top: 1rem;
+  padding: 0.5rem 0;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.download-modal-close-link:hover {
+  color: var(--text);
 }
 
 .download-modal-actions {
